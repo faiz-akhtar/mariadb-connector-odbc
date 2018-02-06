@@ -1485,6 +1485,7 @@ ODBC_TEST(insert_fetched_null)
 ODBC_TEST(odbc45)
 {
   SQLSMALLINT i;
+  SQLCHAR value;
   SQLLEN      len= 0;
   SQLCHAR     val[][4]=        {"0",            "1"};//, "4", "-1", "0.5", "z"},
   SQLWCHAR    valw[][4]=       { { '0', '\0' }, { '1', '\0' }, { '4', '\0' }, { '-', '1', '\0' }, { '0', '.', '5', '\0' }, { 'z', '\0' } };
@@ -1523,7 +1524,8 @@ ODBC_TEST(odbc45)
   for (i= 0; i<sizeof(XpctdValue); ++i)
   {
     CHECK_STMT_RC(Stmt, SQLFetch(Stmt));
-    is_num(my_fetch_int(Stmt, 1), XpctdValue[i]);
+    SQLGetData(Stmt, 1, SQL_C_BIT, &value, sizeof(value), 0);
+    is_num(value, XpctdValue[i]);
   }
 
   CHECK_STMT_RC(Stmt, SQLFreeStmt(Stmt, SQL_CLOSE));
